@@ -370,6 +370,31 @@
     color: var(--muted); font-size: 0.8rem;
   }
 
+  /* CAROUSEL */
+  .carousel-wrap { position: relative; }
+  .carousel-viewport { overflow: hidden; border-radius: 14px; }
+  .carousel-track {
+    display: flex;
+    transition: transform 0.38s cubic-bezier(0.4,0,0.2,1);
+    will-change: transform;
+  }
+  .carousel-track > * { flex: 0 0 100%; min-width: 0; box-sizing: border-box; }
+  .carousel-controls {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0.75rem; margin-top: 1.25rem;
+  }
+  .carousel-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--card-bg); border: 1px solid var(--border);
+    color: var(--text); font-size: 0.85rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, border-color 0.2s, color 0.2s; flex-shrink: 0;
+  }
+  .carousel-btn:hover { background: rgba(0,229,160,0.1); border-color: rgba(0,229,160,0.4); color: var(--accent); }
+  .carousel-btn:disabled { opacity: 0.3; cursor: default; pointer-events: none; }
+  .carousel-counter { font-size: 0.8rem; color: var(--muted); font-weight: 500; min-width: 44px; text-align: center; }
+  .carousel-counter span { color: var(--text); font-weight: 700; }
+
   /* RESPONSIVE */
   @media (max-width: 900px) {
     .team-grid  { grid-template-columns: 1fr 1fr; }
@@ -382,8 +407,7 @@
     .hamburger { display: flex; }
     .hero { padding: 5.5rem 1.25rem 3rem; }
     section { padding: 3.5rem 1.25rem; }
-    .services-grid, .mv-grid, .why-grid, .team-grid { grid-template-columns: 1fr; }
-    .stack-grid { grid-template-columns: repeat(2, 1fr); }
+    .mv-grid { grid-template-columns: 1fr; }
     .steps { grid-template-columns: repeat(2, 1fr); }
     .steps::before { display: none; }
     .stats { grid-template-columns: 1fr; }
@@ -743,6 +767,7 @@
   </div>
 </footer>
 
+
 <script>
   // Nav scroll shadow
   window.addEventListener('scroll', () => {
@@ -768,6 +793,88 @@
     document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
     if (!isOpen) item.classList.add('open');
   }
+
+  // CAROUSELS (mobile only)
+  const CAROUSEL_CONFIGS = [
+    { gridSel: '.services-grid' },
+    { gridSel: '.why-grid' },
+    { gridSel: '.stack-grid' },
+    { gridSel: '.team-grid' },
+  ];
+
+  function buildCarousels() {
+    if (window.innerWidth > 768) return;
+
+    CAROUSEL_CONFIGS.forEach(cfg => {
+      const grid = document.querySelector(cfg.gridSel);
+      if (!grid || grid.dataset.carouselInit) return;
+      grid.dataset.carouselInit = '1';
+
+      const items = Array.from(grid.children);
+      if (items.length < 2) return;
+
+      // Wrap grid in viewport div
+      const viewport = document.createElement('div');
+      viewport.className = 'carousel-viewport';
+      grid.parentNode.insertBefore(viewport, grid);
+      viewport.appendChild(grid);
+      grid.classList.add('carousel-track');
+
+      // Wrap viewport in outer container
+      const wrap = document.createElement('div');
+      wrap.className = 'carousel-wrap';
+      viewport.parentNode.insertBefore(wrap, viewport);
+      wrap.appendChild(viewport);
+
+      // Build controls
+      const total = items.length;
+      const controls = document.createElement('div');
+      controls.className = 'carousel-controls';
+      controls.innerHTML =
+        '<button class="carousel-btn prev" aria-label="Anterior">&#8592;</button>' +
+        '<span class="carousel-counter"><span class="cur">1</span> / ' + total + '</span>' +
+        '<button class="carousel-btn next" aria-label="Siguiente">&#8594;</button>';
+      wrap.appendChild(controls);
+
+      const prevBtn = controls.querySelector('.prev');
+      const nextBtn = controls.querySelector('.next');
+      const curEl   = controls.querySelector('.cur');
+      let current   = 0;
+
+      function goTo(idx) {
+        current = Math.max(0, Math.min(idx, total - 1));
+        grid.style.transform = 'translateX(-' + (current * 100) + '%)';
+        curEl.textContent    = current + 1;
+        prevBtn.disabled     = current === 0;
+        nextBtn.disabled     = current === total - 1;
+      }
+
+      prevBtn.addEventListener('click', () => goTo(current - 1));
+      nextBtn.addEventListener('click', () => goTo(current + 1));
+
+      // Touch swipe
+      let startX = 0;
+      viewport.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+      viewport.addEventListener('touchend',   e => {
+        const diff = startX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) diff > 0 ? goTo(current + 1) : goTo(current - 1);
+      });
+
+      goTo(0);
+    });
+  }
+
+  let wasMobile = window.innerWidth <= 768;
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', buildCarousels);
+  } else {
+    buildCarousels();
+  }
+  window.addEventListener('resize', () => {
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile && !wasMobile) buildCarousels();
+    wasMobile = isMobile;
+  });
 </script>
 
 </body>
