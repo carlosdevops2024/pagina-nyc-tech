@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N&C Tech Solutions</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #060A12;
+    --bg2: #0D1422;
+    --bg3: #111827;
+    --accent: #00E5A0;
+    --accent2: #0066FF;
+    --text: #F0F4FF;
+    --muted: #8A94A8;
+    --border: rgba(255,255,255,0.08);
+    --card-bg: rgba(255,255,255,0.04);
+    --glow: rgba(0,229,160,0.15);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: rgba(6, 10, 18, 0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.4rem;
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--accent); }
+
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: var(--muted); font-size: 0.9rem;
+    font-weight: 500; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta {
+    background: var(--accent); color: #060A12;
+    padding: 0.55rem 1.4rem; border-radius: 8px;
+    text-decoration: none; font-weight: 600; font-size: 0.9rem;
+    transition: opacity 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 7rem 4rem 4rem;
+    position: relative; overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 50%, rgba(0,102,255,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 60%, rgba(0,229,160,0.08) 0%, transparent 60%);
+  }
+
+  .grid-overlay {
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .hero-content { position: relative; z-index: 1; max-width: 700px; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(0,229,160,0.1); border: 1px solid rgba(0,229,160,0.3);
+    color: var(--accent); font-size: 0.8rem; font-weight: 600;
+    padding: 0.4rem 1rem; border-radius: 100px;
+    letter-spacing: 0.5px; margin-bottom: 1.5rem;
+  }
+
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.6rem, 5vw, 4.2rem);
+    font-weight: 800; line-height: 1.1;
+    letter-spacing: -1.5px; margin-bottom: 1.2rem;
+  }
+
+  h1 .highlight {
+    background: linear-gradient(135deg, var(--accent) 0%, #00AAFF 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-desc {
+    font-size: 1.15rem; color: var(--muted); max-width: 540px;
+    line-height: 1.7; margin-bottom: 2rem;
+  }
+
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: var(--accent); color: #060A12;
+    padding: 0.85rem 2rem; border-radius: 10px;
+    text-decoration: none; font-weight: 700; font-size: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,229,160,0.35); }
+
+  .btn-secondary {
+    border: 1px solid var(--border); color: var(--text);
+    padding: 0.85rem 2rem; border-radius: 10px;
+    text-decoration: none; font-weight: 500; font-size: 1rem;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .btn-secondary:hover { border-color: rgba(255,255,255,0.25); background: var(--card-bg); }
+
+  /* STATS */
+  .stats {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--border);
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  }
+
+  .stat {
+    background: var(--bg); padding: 2rem;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.2rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), #00AAFF);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stat-label { color: var(--muted); font-size: 0.85rem; margin-top: 0.25rem; }
+
+  /* SECTION */
+  section { padding: 6rem 4rem; }
+
+  .section-tag {
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 2px;
+    color: var(--accent); text-transform: uppercase; margin-bottom: 0.75rem;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 800; letter-spacing: -1px;
+    line-height: 1.2; margin-bottom: 0.75rem;
+  }
+
+  .section-desc { color: var(--muted); max-width: 520px; font-size: 1rem; margin-bottom: 3rem; }
+
+  /* SERVICES */
+  .services-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;
+  }
+
+  .service-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem;
+    transition: border-color 0.3s, transform 0.3s;
+    cursor: default;
+  }
+  .service-card:hover {
+    border-color: rgba(0,229,160,0.3);
+    transform: translateY(-4px);
+  }
+
+  .service-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; margin-bottom: 1.25rem;
+  }
+
+  .icon-devops { background: rgba(0,229,160,0.12); }
+  .icon-cloud { background: rgba(0,102,255,0.12); }
+  .icon-dev { background: rgba(168,85,247,0.12); }
+  .icon-consult { background: rgba(245,158,11,0.12); }
+
+  .service-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.15rem; font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .service-card p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.25rem; line-height: 1.6; }
+
+  .service-features { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; }
+  .service-features li {
+    font-size: 0.85rem; color: var(--muted);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .service-features li::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0;
+  }
+
+  .benefits { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1.25rem; }
+  .benefit-pill {
+    font-size: 0.75rem; font-weight: 500;
+    padding: 0.3rem 0.75rem; border-radius: 100px;
+    background: rgba(0,229,160,0.08); color: var(--accent);
+    border: 1px solid rgba(0,229,160,0.2);
+  }
+
+  /* HOW IT WORKS */
+  .how-bg { background: var(--bg2); }
+
+  .steps {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;
+    position: relative;
+  }
+
+  .steps::before {
+    content: '';
+    position: absolute; top: 2rem; left: 15%; right: 15%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  .step { text-align: center; }
+
+  .step-num {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid rgba(0,229,160,0.3);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1rem;
+    font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800;
+    color: var(--accent);
+  }
+
+  .step h4 { font-weight: 600; margin-bottom: 0.4rem; font-size: 0.95rem; }
+  .step p { color: var(--muted); font-size: 0.83rem; }
+
+  /* CTA */
+  .cta-section {
+    text-align: center;
+    background: linear-gradient(135deg, rgba(0,229,160,0.06), rgba(0,102,255,0.06));
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 4rem 2rem; margin: 0 4rem 4rem;
+  }
+
+  .cta-section h2 { margin-bottom: 1rem; }
+  .cta-section p { color: var(--muted); max-width: 480px; margin: 0 auto 2rem; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 4rem;
+    display: flex; align-items: center; justify-content: space-between;
+    color: var(--muted); font-size: 0.85rem;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero { padding: 6rem 1.5rem 3rem; }
+    section { padding: 4rem 1.5rem; }
+    .services-grid { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: repeat(2, 1fr); }
+    .steps::before { display: none; }
+    .stats { grid-template-columns: 1fr; }
+    .cta-section { margin: 0 1.5rem 3rem; padding: 3rem 1.5rem; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">N<span>&</span>C Tech</div>
+  <ul class="nav-links">
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#proceso">Proceso</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+  <a href="#contacto" class="nav-cta">Hablar con un experto</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="grid-overlay"></div>
+  <div class="hero-content">
+    <div class="badge"><div class="dot"></div> Soluciones tecnológicas para empresas</div>
+    <h1>Tu infraestructura,<br><span class="highlight">automatizada y escalable</span></h1>
+    <p class="hero-desc">Ayudamos a empresas a modernizar su infraestructura con DevOps, Cloud y desarrollo de software. Menos errores, más velocidad, mejores resultados.</p>
+    <div class="hero-btns">
+      <a href="#servicios" class="btn-primary">Ver servicios</a>
+      <a href="#contacto" class="btn-secondary">Agendar consulta</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num">+50</div>
+    <div class="stat-label">Proyectos entregados</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">3x</div>
+    <div class="stat-label">Más velocidad de despliegue</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">99.9%</div>
+    <div class="stat-label">Disponibilidad garantizada</div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="servicios">
+  <div class="section-tag">Lo que hacemos</div>
+  <h2>Servicios diseñados para escalar</h2>
+  <p class="section-desc">Desde la automatización de procesos hasta arquitecturas cloud completas, cubrimos todo el ciclo tecnológico de tu empresa.</p>
+
+  <div class="services-grid">
+
+    <div class="service-card">
+      <div class="service-icon icon-devops">⚙️</div>
+      <h3>Servicios DevOps</h3>
+      <p>Automatizamos tu ciclo de desarrollo para que tu equipo entregue más rápido y con menos riesgos.</p>
+      <ul class="service-features">
+        <li>CI/CD pipelines personalizados</li>
+        <li>Automatización de despliegues</li>
+        <li>Dockerización de aplicaciones</li>
+        <li>Integración con repositorios Git</li>
+        <li>Optimización del proceso de desarrollo</li>
+      </ul>
+      <div class="benefits">
+        <span class="benefit-pill">+ velocidad</span>
+        <span class="benefit-pill">- errores</span>
+        <span class="benefit-pill">+ eficiencia</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon icon-cloud">☁️</div>
+      <h3>Infraestructura Cloud</h3>
+      <p>Diseñamos y migramos tu infraestructura a la nube de forma segura, escalable y con costos optimizados.</p>
+      <ul class="service-features">
+        <li>Diseño de arquitectura cloud</li>
+        <li>Infrastructure as Code (IaC)</li>
+        <li>Configuración de servidores</li>
+        <li>Arquitecturas escalables</li>
+        <li>Optimización de costos</li>
+      </ul>
+      <div class="benefits">
+        <span class="benefit-pill">+ disponibilidad</span>
+        <span class="benefit-pill">+ rendimiento</span>
+        <span class="benefit-pill">- costos</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon icon-dev">💻</div>
+      <h3>Desarrollo de Software</h3>
+      <p>Creamos aplicaciones a la medida que resuelven los problemas reales de tu negocio.</p>
+      <ul class="service-features">
+        <li>Desarrollo de aplicaciones web</li>
+        <li>APIs RESTful y GraphQL</li>
+        <li>Integración de sistemas</li>
+        <li>Mantenimiento de software</li>
+      </ul>
+      <div class="benefits">
+        <span class="benefit-pill">a la medida</span>
+        <span class="benefit-pill">escalable</span>
+        <span class="benefit-pill">mantenible</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon icon-consult">🔍</div>
+      <h3>Consultoría Tecnológica</h3>
+      <p>Te asesoramos para tomar las mejores decisiones tecnológicas, con base en tu negocio y tus objetivos.</p>
+      <ul class="service-features">
+        <li>Auditoría de infraestructura</li>
+        <li>Asesoría DevOps</li>
+        <li>Mejora de arquitectura</li>
+        <li>Roadmap tecnológico</li>
+      </ul>
+      <div class="benefits">
+        <span class="benefit-pill">claridad</span>
+        <span class="benefit-pill">estrategia</span>
+        <span class="benefit-pill">resultados</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROCESO -->
+<section id="proceso" class="how-bg">
+  <div class="section-tag">Cómo trabajamos</div>
+  <h2>Simple, directo y efectivo</h2>
+  <p class="section-desc">Un proceso claro para que siempre sepas en qué etapa estás y qué viene después.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h4>Diagnóstico</h4>
+      <p>Analizamos tu infraestructura y objetivos de negocio actuales.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h4>Propuesta</h4>
+      <p>Diseñamos una solución personalizada con tiempos y costos claros.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h4>Implementación</h4>
+      <p>Ejecutamos con seguimiento continuo y reportes de avance.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h4>Soporte</h4>
+      <p>Te acompañamos después del lanzamiento para garantizar estabilidad.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div id="contacto">
+  <div class="cta-section">
+    <div class="section-tag" style="text-align:center;">¿Listo para dar el siguiente paso?</div>
+    <h2>Hablemos de tu proyecto</h2>
+    <p>Agenda una consulta gratuita y descubre cómo N&C Tech puede transformar la infraestructura de tu empresa.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="mailto:contacto@nctech.com" class="btn-primary">Escribirnos por correo</a>
+      <a href="#" class="btn-secondary">Agendar llamada</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="logo" style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;">N<span style="color:var(--accent)">&</span>C Tech Solutions</div>
+  <div>© 2025 N&C Tech Solutions. Todos los derechos reservados.</div>
+</footer>
+
+</body>
+</html>
